@@ -1,0 +1,38 @@
+%h1 Welcome, make your verbose url to a shorter form!!!!
+- if flash[:notice]
+  %h2 #{flash[:notice]}
+%p Please enter the your URL here
+
+
+= form_with url: url_shorteners_path, id: "shorten-url-form" do |form|
+  = form.text_field :url
+  = form.submit "SHORTEN"
+
+%br
+%br
+
+:javascript
+  window.addEventListener("load", () => {
+    const element = document.querySelector("#shorten-url-form");
+    element.addEventListener("ajax:success", (event) => {
+      const [_data, _status, xhr] = event.detail;
+      console.log(_data.short_url)
+      var output_div = document.getElementById("output");
+      output_text = "Here is your short URL: " + _data.short_url
+
+      if(typeof(output_div) != 'undefined' && output_div != null){
+      	output_div.innerHTML = output_text
+      } else{
+      	console.log("No")
+      	var tag = document.createElement("div");
+      	tag.setAttribute("id", "output");
+      	var text = document.createTextNode(output_text);
+      	tag.appendChild(text);
+       	element.appendChild(tag);
+      }
+    });
+    element.addEventListener("ajax:error", (event) => {
+      const urlElement = document.querySelector("#url");
+      urlElement.setAttribute("placeholder", event.detail[0].error_message)
+    });
+  });

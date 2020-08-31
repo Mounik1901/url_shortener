@@ -1,0 +1,9 @@
+%h1 Analytics
+- @url_records.each do |url_record|
+	%p #{url_record.original_url}
+	%p "#{SHORT_DOMAIN}#{url_record.url_identifier}"
+	%p Total clicks: #{url_record.clicks}
+	- if url_record.countries.present?
+		%p Countries: #{url_record.countries.split(",").uniq!.join(",")}
+	%hr
+	%br
